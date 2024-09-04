@@ -1,10 +1,10 @@
 <?php
 
-// hostname: "127.0.0.1"
-// username: "mariadb"
-// password: "mariadb"
-// database: "mariadb"
-// port:     3306
+$hostname = "127.0.0.1";
+$username = "mariadb";
+$password = "mariadb";
+$database = "mariadb";
+$port     = 3306;
 
 class Database
 {
@@ -49,7 +49,7 @@ class Database
   }
 }
 
-$db = new Database("127.0.0.1", "mariadb", "mariadb", "mariadb", 3306);
+$db = new Database($hostname, $username, $password, $database, $port);
 $result = $db->query("SELECT * FROM tasks LIMIT 1");
 $record = $db->fetch_assoc($result);
 $db->free_result($result);
