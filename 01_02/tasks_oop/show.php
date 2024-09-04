@@ -1,59 +1,13 @@
 <?php
-
 $hostname = "127.0.0.1";
 $username = "mariadb";
 $password = "mariadb";
 $database = "mariadb";
 $port     = 3306;
 
-class Database
-{
-  private $connection;
-
-  public function __construct($host, $user, $password, $database, $port)
-  {
-    $this->connection = new mysqli(
-      $host,
-      $user,
-      $password,
-      $database,
-      $port
-    );
-    if ($this->connection->connect_error) {
-      die("Connection failed: " . $this->connection->connect_error);
-    }
-  }
-
-  public function query($sql)
-  {
-    $result = $this->connection->query($sql);
-    if ($result === false) {
-      die("Query failed: " . $this->connection->error);
-    }
-    return $result;
-  }
-
-  public function fetch_assoc($result)
-  {
-    return $result->fetch_assoc();
-  }
-
-  public function free_result($result)
-  {
-    $result->free();
-  }
-
-  public function close()
-  {
-    $this->connection->close();
-  }
-}
-
-$db = new Database($hostname, $username, $password, $database, $port);
+$db = new mysqli($hostname, $username, $password, $database, $port);
 $result = $db->query("SELECT * FROM tasks LIMIT 1");
-$record = $db->fetch_assoc($result);
-$db->free_result($result);
-$db->close();
+$record = $result->fetch_object();
 ?>
 
 <!doctype html>
@@ -75,19 +29,19 @@ $db->close();
 
     <dl>
       <dt>ID</dt>
-      <dd><?php echo $record["id"] ?></dd>
+      <dd><?php echo $record->id; ?></dd>
     </dl>
     <dl>
       <dt>Priority</dt>
-      <dd><?php echo $record["priority"] ?></dd>
+      <dd><?php echo $record->priority; ?></dd>
     </dl>
     <dl>
       <dt>Completed</dt>
-      <dd><?php echo (bool)$record["completed"] ? "true" : "false" ?></dd>
+      <dd><?php echo $record->completed == 1 ? "true" : "false"; ?></dd>
     </dl>
     <dl>
       <dt>Description</dt>
-      <dd><?php echo $record["description"] ?></dd>
+      <dd><?php echo $record->description; ?></dd>
     </dl>
 
   </section>
@@ -95,3 +49,8 @@ $db->close();
 </body>
 
 </html>
+
+<?php
+$result->free();
+$db->close();
+?>
